@@ -25,22 +25,26 @@ public class Scanner{
 
     public Token nextToken(){
         char currentChar;
+        String value = "";
+        Token token;
         if(isEOF()){
             return null;
         }
         estado = 0;
         while(true){
             currentChar = nextChar();
+            
 
             switch(estado){
                 case 0:
                     if(isChar(currentChar)){
+                        value += currentChar;
                         estado = 1;
                         break;
                     }else if(isDigit(currentChar)){
                         estado = 3;
+                        value += currentChar;
                         break;
-
                     }else if(isSpace(currentChar)){
                         estado = 0;
                     }else if(isOperator(currentChar)){
@@ -52,12 +56,31 @@ public class Scanner{
                 case 1:
                     if(isChar(currentChar) || isDigit(currentChar)){
                         estado = 1;
+                        value += currentChar;
                     }else{
                         estado = 2;
                     }
                 case 2:
-                    Token token = new Token();
+                    back();
+                    token = new Token();
                     token.setType(Token.TK_IDENTIFIER);
+                    token.setText(value);
+                    return token;
+                case 3:
+                    if(isDigit(currentChar)){
+                        estado = 3;
+                        value += currentChar;
+                    }else if(!isChar(currentChar)){
+                        estado = 4;
+                    }else{
+                        throw new RuntimeException("Unrecognized NUMBER");
+                    }
+                    break;
+                case 4:
+                    token = new Token();
+                    token.setType(Token.TK_NUMBER);
+                    token.setText(value);
+                    back();
                     return token;
 
             }

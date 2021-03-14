@@ -1,0 +1,24 @@
+
+Implemente em Java um analisador léxico para os seguintes símbolos:
+
+• letra ::= [a-z]
+• digito ::= [0-9]
+• inteiro ::= digito+
+• float ::= dígito+.dígito+
+• char ::= 'letra' | 'dígito'
+• identificador ::= (letra | "_")(letra | "_" | dígito)*
+• operador_relacional ::= <  |  >  |  <=  |  >=  |  ==  |  !=
+• operador_aritmético ::= "+"  |  "-"  |  "*"  |  "/"  |  "="
+• caracter_especial ::= ")"  |  "("  |  "{"  |  "}"  |  ","  |  ";"
+• palavra_reservada ::= main  |  if  |  else  |  while  |  do  |  for  |  int  |  float  |  char
+
+
+Programa deverá:
+
+• Ler arquivo texto em arquivo com código na linguagem inspirada em C
+• Implementar método que imprima todos os tokens encontrados e respectivos tipos (operador_relacional_MENOR, operador_relacional_MAIOR, IDENTIFICADOR, INTEIRO, etc.).
+•Implementar método que retorne próximo token do texto, indicando seu tipo (“getNextToken(): Token”).
+• O programa deverá imprimir mensagens de erro adequada ao problema encontrado:
+o Mensagem deve ser específica: que tipo de erro? (ex. nome de variável inválida, operado lógico inválido, etc.)
+o Indicar último token lido.
+o Outras possibilidades: (1) linha do erro, (2) coluna do erro, etc.

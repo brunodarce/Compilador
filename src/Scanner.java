@@ -32,9 +32,7 @@ public class Scanner{
         }
         estado = 0;
         while(true){
-            currentChar = nextChar();
-            
-
+            currentChar = nextChar(); 
             switch(estado){
                 case 0:
                     if(isChar(currentChar)){
@@ -57,6 +55,7 @@ public class Scanner{
                     if(isChar(currentChar) || isDigit(currentChar)){
                         estado = 1;
                         value += currentChar;
+                        break;
                     }else{
                         estado = 2;
                     }
@@ -70,19 +69,38 @@ public class Scanner{
                     if(isDigit(currentChar)){
                         estado = 3;
                         value += currentChar;
-                    }else if(!isChar(currentChar)){
+                        break;
+                    }else if(!isChar(currentChar) && !isDot(currentChar)){
                         estado = 4;
+                    }else if(isDot(currentChar)){
+                        estado = 5;
+                        value += currentChar;
+                        break;
                     }else{
                         throw new RuntimeException("Unrecognized NUMBER");
                     }
                     break;
                 case 4:
                     token = new Token();
-                    token.setType(Token.TK_NUMBER);
+                    token.setType(Token.TK_INT);
                     token.setText(value);
                     back();
                     return token;
-
+                case 5:
+                    if(isDigit(currentChar)){
+                        estado = 5;
+                        value += currentChar;
+                        break;
+                    }else if(!isChar(currentChar)){
+                        estado = 6;
+                    }
+                case 6:
+                    token = new Token();
+                    token.setType(Token.TK_FLOAT);
+                    token.setText(value);
+                    back();
+                    return token;
+                    
             }
         }
 
@@ -102,6 +120,10 @@ public class Scanner{
 
     private Boolean isSpace(char c){
         return c== ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
+
+    private Boolean isDot(char c){
+        return c== '.';
     }
 
     private char nextChar(){

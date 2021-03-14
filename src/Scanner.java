@@ -1,6 +1,7 @@
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.*;
 
 
 
@@ -9,6 +10,8 @@ public class Scanner{
     private char[] content;
     private int     estado;
     private int        pos;
+
+    public static final String[] RESERVED_WORD = new String[] {"main","if","else","while","do","for","int","float","char"};
 
     public Scanner(String filename) {
         try{
@@ -45,8 +48,24 @@ public class Scanner{
                         break;
                     }else if(isSpace(currentChar)){
                         estado = 0;
-                    }else if(isOperator(currentChar)){
-                        estado = 5;
+                    }else if(isEqualityOperator(currentChar)){
+                        estado = 7;
+                        value += currentChar;
+                        break;
+                    }else if(isRelationalOperator(currentChar)){
+                        estado = 8;
+                        value += currentChar;
+                        break;                    
+                    }else if(isArithmeticOperator(currentChar)){
+                        estado = 9;
+                        value += currentChar;
+                        break;                     
+                    }else if(isSpecialCharacter(currentChar)){
+                        token = new Token();
+                        token.setType(Token.TK_ARITHMETIC_OPERATOR);
+                        token.setDescription("Caracter Especial");
+                        token.setText(value);                        
+                        return token; 
                     }else{
                         throw new RuntimeException("Unrecognized SYMBOL");
                     }
@@ -61,10 +80,20 @@ public class Scanner{
                     }
                 case 2:
                     back();
-                    token = new Token();
-                    token.setType(Token.TK_IDENTIFIER);
-                    token.setText(value);
-                    return token;
+                    if(Arrays.asList(RESERVED_WORD).contains(value)){
+                        token = new Token();
+                        token.setType(Token.TK_RESERVED_WORD);
+                        token.setDescription("Palavra Reservada");
+                        token.setText(value);
+                        return token;
+                    }else{
+                        token = new Token();
+                        token.setType(Token.TK_IDENTIFIER);
+                        token.setDescription("Identificador");
+                        token.setText(value);
+                        return token;
+                    }
+                    
                 case 3:
                     if(isDigit(currentChar)){
                         estado = 3;
@@ -83,6 +112,7 @@ public class Scanner{
                 case 4:
                     token = new Token();
                     token.setType(Token.TK_INT);
+                    token.setDescription("Inteiro");
                     token.setText(value);
                     back();
                     return token;
@@ -97,9 +127,53 @@ public class Scanner{
                 case 6:
                     token = new Token();
                     token.setType(Token.TK_FLOAT);
+                    token.setDescription("Float");
                     token.setText(value);
                     back();
                     return token;
+                case 7:
+                    if(isEqualityOperator(currentChar) || isRelationalOperator(currentChar)){
+                        value += currentChar;
+                        token = new Token();
+                        token.setType(Token.TK_RELATIONAL_OPERATOR);
+                        token.setDescription("Operador Relacional");
+                        token.setText(value);
+                        //back();
+                        return token;
+                    }else if(!isEqualityOperator(currentChar) || !isRelationalOperator(currentChar)){                       
+                        token = new Token();
+                        token.setType(Token.TK_ARITHMETIC_OPERATOR);
+                        token.setDescription("Operador Artimético");
+                        token.setText(value);
+                        back();
+                        return token;
+                    }
+                case 8:
+                    if(isEqualityOperator(currentChar) || isRelationalOperator(currentChar)){
+                        value += currentChar;
+                        token = new Token();
+                        token.setType(Token.TK_RELATIONAL_OPERATOR);
+                        token.setDescription("Operador Relacional");
+                        token.setText(value);
+                        //back();
+                        return token;
+                    }else if(isSpace(currentChar)){
+                        value += currentChar;
+                        token = new Token();
+                        token.setType(Token.TK_RELATIONAL_OPERATOR);
+                        token.setDescription("Operador Relacional");
+                        token.setText(value);
+                        //back();
+                        return token;
+                    }
+                case 9:
+                    token = new Token();
+                    token.setType(Token.TK_ARITHMETIC_OPERATOR);
+                    token.setDescription("Operador Artimético");
+                    token.setText(value);
+                    back();
+                    return token;
+
                     
             }
         }
@@ -114,8 +188,20 @@ public class Scanner{
        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    private Boolean isOperator(char c){
-        return c == '>' || c == '<' || c == '=' || c == '!';
+    private Boolean isRelationalOperator(char c){
+        return c == '>' || c == '<' || c == '!';
+    }
+
+    private Boolean isArithmeticOperator(char c){
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '=';
+    }
+
+    private Boolean isEqualityOperator(char c){
+        return c == '=';
+    }
+    
+    private Boolean isSpecialCharacter(char c){
+        return c == '(' || c == ')' || c == '{' || c == '}' || c == ',' || c == ';';
     }
 
     private Boolean isSpace(char c){

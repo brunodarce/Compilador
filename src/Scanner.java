@@ -61,6 +61,7 @@ public class Scanner{
                         value += currentChar;
                         break;                     
                     }else if(isSpecialCharacter(currentChar)){
+                        value += currentChar;
                         token = new Token();
                         token.setType(Token.TK_ARITHMETIC_OPERATOR);
                         token.setDescription("Caracter Especial");

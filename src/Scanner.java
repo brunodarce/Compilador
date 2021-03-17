@@ -12,6 +12,21 @@ public class Scanner{
     private int        pos;
 
     public static final String[] RESERVED_WORD = new String[] {"main","if","else","while","do","for","int","float","char"};
+    public static final String MAIOR_QUE = ">";
+    public static final String MENOR_QUE = "<";
+    public static final String MAIOR_OU_IGUAL = ">=";
+    public static final String MENOR_OU_IGUAL = "<=";
+    public static final String SOMA = "+";
+    public static final String SUBTRACAO = "-";
+    public static final String MULTIPLICACAO = "*";
+    public static final String DIVISAO = "/";
+    public static final String ATRIBUICAO = "=";
+    public static final String ABREPARENTESES = "(";
+    public static final String FECHAPARENTESES = ")";
+    public static final String ABRECHAVE = "{";
+    public static final String FECHACHAVE = "}";
+    public static final String VIRGULA = ",";
+    public static final String PONTOEVIRGULA = ";";
 
     public Scanner(String filename) {
         try{
@@ -62,10 +77,8 @@ public class Scanner{
                         break;                     
                     }else if(isSpecialCharacter(currentChar)){
                         value += currentChar;
-                        token = new Token();
-                        token.setType(Token.TK_ARITHMETIC_OPERATOR);
-                        token.setDescription("Caracter Especial");
-                        token.setText(value);                        
+                        token = new Token(); //AQUI ANTES ESTAVA SETADO COMO OPERADOR ARITMETICO
+                        setAsSpecialCharacter(value, token);                   
                         return token; 
                     }else{
                         throw new RuntimeException("Unrecognized SYMBOL");
@@ -102,6 +115,7 @@ public class Scanner{
                         break;
                     }else if(!isChar(currentChar) && !isDot(currentChar)){
                         estado = 4;
+                        break;
                     }else if(isDot(currentChar)){
                         estado = 5;
                         value += currentChar;
@@ -109,7 +123,7 @@ public class Scanner{
                     }else{
                         throw new RuntimeException("Unrecognized NUMBER");
                     }
-                    break;
+                    break; //BREAK DANDO ERRO AO COMPILAR
                 case 4:
                     token = new Token();
                     token.setType(Token.TK_INT);
@@ -136,16 +150,12 @@ public class Scanner{
                     if(isEqualityOperator(currentChar) || isRelationalOperator(currentChar)){
                         value += currentChar;
                         token = new Token();
-                        token.setType(Token.TK_RELATIONAL_OPERATOR);
-                        token.setDescription("Operador Relacional");
-                        token.setText(value);
+                        setAsRelationalOperator(value, token);
                         //back();
                         return token;
                     }else if(!isEqualityOperator(currentChar) || !isRelationalOperator(currentChar)){                       
                         token = new Token();
-                        token.setType(Token.TK_ARITHMETIC_OPERATOR);
-                        token.setDescription("Operador Artimético");
-                        token.setText(value);
+                        setAsArithmeticOperator(value, token);
                         back();
                         return token;
                     }
@@ -153,25 +163,19 @@ public class Scanner{
                     if(isEqualityOperator(currentChar) || isRelationalOperator(currentChar)){
                         value += currentChar;
                         token = new Token();
-                        token.setType(Token.TK_RELATIONAL_OPERATOR);
-                        token.setDescription("Operador Relacional");
-                        token.setText(value);
+                        setAsRelationalOperator(value, token);
                         //back();
                         return token;
                     }else if(isSpace(currentChar)){
                         value += currentChar;
                         token = new Token();
-                        token.setType(Token.TK_RELATIONAL_OPERATOR);
-                        token.setDescription("Operador Relacional");
-                        token.setText(value);
+                        setAsRelationalOperator(value, token);
                         //back();
                         return token;
                     }
                 case 9:
                     token = new Token();
-                    token.setType(Token.TK_ARITHMETIC_OPERATOR);
-                    token.setDescription("Operador Artimético");
-                    token.setText(value);
+                    setAsArithmeticOperator(value, token);
                     back();
                     return token;
 
@@ -179,6 +183,96 @@ public class Scanner{
             }
         }
 
+    }
+
+    private void setAsRelationalOperator(String value, Token token){
+        if(value.equals(MAIOR_QUE)){
+            token.setType(Token.TK_RELATIONAL_OPERATOR_MAIORQUE);
+            token.setDescription("Operador Relacional Maior Que");
+            token.setText(value);
+        }
+        else if(value.equals(MENOR_QUE)){
+            token.setType(Token.TK_RELATIONAL_OPERATOR_MENORQUE);
+            token.setDescription("Operador Relacional Menor Que");
+            token.setText(value);
+        }
+        else if(value.equals(MAIOR_OU_IGUAL)){
+            token.setType(Token.TK_RELATIONAL_OPERATOR_MAIOROUIGUAL);
+            token.setDescription("Operador Relacional Maior ou Igual");
+            token.setText(value);
+        }
+        else if(value.equals(MENOR_OU_IGUAL)){
+            token.setType(Token.TK_RELATIONAL_OPERATOR_MENOROUIGUAL);
+            token.setDescription("Operador Relacional Menor ou Igual");
+            token.setText(value);
+        }else{
+
+        }
+    }
+
+    private void setAsArithmeticOperator(String value, Token token){
+        if(value.equals(SOMA)){
+            token.setType(Token.TK_ARITHMETIC_OPERATOR_SOMA);
+            token.setDescription("Operador Aritmético Soma");
+            token.setText(value);
+        }
+        else if(value.equals(SUBTRACAO)){
+            token.setType(Token.TK_ARITHMETIC_OPERATOR_SUBTRACAO);
+            token.setDescription("Operador Relacional Subtração");
+            token.setText(value);
+        }
+        else if(value.equals(MULTIPLICACAO)){
+            token.setType(Token.TK_ARITHMETIC_OPERATOR_MULTIPLICACAO);
+            token.setDescription("Operador Relacional Multiplicação");
+            token.setText(value);
+        }
+        else if(value.equals(DIVISAO)){
+            token.setType(Token.TK_ARITHMETIC_OPERATOR_DIVISAO);
+            token.setDescription("Operador Relacional Divisão");
+            token.setText(value);
+        }
+        else if(value.equals(ATRIBUICAO)){
+            token.setType(Token.TK_ARITHMETIC_OPERATOR_ATRIBUICAO);
+            token.setDescription("Operador Relacional Atribuição");
+            token.setText(value);
+        }else{
+
+        }
+    }
+
+    private void setAsSpecialCharacter(String value, Token token){
+        if(value.equals(ABREPARENTESES)){
+            token.setType(Token.SPECIAL_CHARACTER_ABREPARENTESES);
+            token.setDescription("Caractere Especial Abre Parênteses");
+            token.setText(value);
+        }
+        else if(value.equals(FECHAPARENTESES)){
+            token.setType(Token.SPECIAL_CHARACTER_FECHAPARENTESES);
+            token.setDescription("Caractere Especial Fecha Parênteses");
+            token.setText(value);
+        }
+        else if(value.equals(ABRECHAVE)){
+            token.setType(Token.SPECIAL_CHARACTER_ABRECHAVE);
+            token.setDescription("Caractere Especial Abre Chave");
+            token.setText(value);
+        }
+        else if(value.equals(FECHACHAVE)){
+            token.setType(Token.SPECIAL_CHARACTER_FECHACHAVE);
+            token.setDescription("Caractere Especial Fecha Chave");
+            token.setText(value);
+        }
+        else if(value.equals(VIRGULA)){
+            token.setType(Token.SPECIAL_CHARACTER_VIRGULA);
+            token.setDescription("Caractere Especial Vírgula");
+            token.setText(value);
+        }
+        else if(value.equals(PONTOEVIRGULA)){
+            token.setType(Token.SPECIAL_CHARACTER_PONTOEVIRGULA);
+            token.setDescription("Caractere Especial Ponto e Vírgula");
+            token.setText(value);
+        }else{
+
+        }
     }
 
     private Boolean isDigit(char c){

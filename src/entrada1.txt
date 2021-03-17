@@ -28,3 +28,8 @@ teste123
 
 =< > < !
 !=
+
+int dav = 2;
+dav = 2 + 2;
+
+if(dav == 4). 

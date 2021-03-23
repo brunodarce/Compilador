@@ -16,6 +16,7 @@ public class Scanner{
     public static final String MENOR_QUE = "<";
     public static final String MAIOR_OU_IGUAL = ">=";
     public static final String MENOR_OU_IGUAL = "<=";
+    public static final String IGUAL = "==";
     public static final String SOMA = "+";
     public static final String SUBTRACAO = "-";
     public static final String MULTIPLICACAO = "*";
@@ -121,6 +122,7 @@ public class Scanner{
                         break;
                     }else if(!isChar(currentChar) && !isDot(currentChar)){
                         estado = 4;
+                        back();
                     }else if(isDot(currentChar)){
                         estado = 5;
                         value += currentChar;
@@ -277,8 +279,11 @@ public class Scanner{
             token.setType(Token.TK_RELATIONAL_OPERATOR_MENOROUIGUAL);
             token.setDescription("Operador Relacional Menor ou Igual");
             token.setText(value);
-        }else{
-
+        }
+        else if(value.equals(IGUAL)){
+            token.setType(Token.TK_RELATIONAL_OPERATOR_IGUAL);
+            token.setDescription("Operador Relacional Igual");
+            token.setText(value);
         }
     }
 

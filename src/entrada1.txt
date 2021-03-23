@@ -1,4 +1,21 @@
 
+ == 5){
+	teste = 58;
+}
+teste2
+"teste3"
+(
+
+
+
+if(dav == 5){
+	teste = 58;
+}
+teste2
+"teste3"
+(
+
+
 'a'
 
 '2'

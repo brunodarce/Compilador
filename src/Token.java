@@ -23,6 +23,7 @@ public class Token {
     public static final int SPECIAL_CHARACTER_FECHACHAVE            =22;
     public static final int SPECIAL_CHARACTER_VIRGULA               =23;
     public static final int SPECIAL_CHARACTER_PONTOEVIRGULA         =24;    
+    public static final int TK_RELATIONAL_OPERATOR_IGUAL            =25;
 
     private int     type;
     private String  text;

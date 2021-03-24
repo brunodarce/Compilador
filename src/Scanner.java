@@ -27,7 +27,9 @@ public class Scanner{
     public static final String ABRECHAVE = "{";
     public static final String FECHACHAVE = "}";
     public static final String VIRGULA = ",";
-    public static final String PONTOEVIRGULA = ";";
+    public static final String PONTOEVIRGULA = ";"; 
+    public static final String DIFERENTE = "!=";
+
 
     public Scanner(String filename) {
         try{
@@ -51,7 +53,12 @@ public class Scanner{
         }
         estado = 0;
         while(true){
-            currentChar = nextChar(); 
+            if(isEOF()){
+                System.out.println("FIM DE ARQUIVO");                
+                return null;
+            }
+            currentChar = nextChar();
+                     
             switch(estado){
                 case 0:
                     if(isChar(currentChar)){
@@ -87,15 +94,37 @@ public class Scanner{
                         estado = 10;
                         value += currentChar;
                         break;
+                    }else if(isUnderscore(currentChar)){
+                        estado = 1;
+                        value += currentChar;
+                        break;
                     }else{
                         throw new RuntimeException("Unrecognized SYMBOL");
                     }
                     break;
                 case 1:
-                    if(isChar(currentChar) || isDigit(currentChar)){
+                    if(isChar(currentChar) || isDigit(currentChar) || isUnderscore(currentChar)){
                         estado = 1;
                         value += currentChar;
-                        break;
+                        if(nextCharIsEOF()){
+                            if(Arrays.asList(RESERVED_WORD).contains(value)){
+                                token = new Token();
+                                token.setType(Token.TK_RESERVED_WORD);
+                                token.setDescription("Palavra Reservada");
+                                token.setText(value);
+                                return token;
+                            }else{
+                                token = new Token();
+                                token.setType(Token.TK_IDENTIFIER);
+                                token.setDescription("Identificador");
+                                token.setText(value);
+                                return token;
+                            }
+
+                        }else{
+                            back();
+                            break;
+                        }                        
                     }else{
                         estado = 2;
                     }
@@ -174,7 +203,9 @@ public class Scanner{
                         //back();
                         return token;
                     }else if(isSpace(currentChar)){
-                        value += currentChar;
+                        if(isExclamation(value)){
+                            throw new RuntimeException("Unrecognized Relational Operator"); 
+                        }
                         token = new Token();
                         setAsRelationalOperator(value, token);
                         //back();
@@ -243,6 +274,10 @@ public class Scanner{
         return c== '.';
     }
 
+    private Boolean isExclamation( String c){
+        return c.equals("!");
+    }
+
     private char nextChar(){
         return content[pos++];
     }
@@ -251,8 +286,16 @@ public class Scanner{
         pos--;
     }
 
+    private Boolean nextCharIsEOF(){
+        return pos++ == content.length;
+    }
+
+    private Boolean isUnderscore(char c){
+        return c == '_';
+    }
+
     private Boolean isEOF(){
-        return pos == content.length;
+        return pos >= content.length;
     }
 
     private Boolean isSingleQuotes(char c){
@@ -283,6 +326,11 @@ public class Scanner{
         else if(value.equals(IGUAL)){
             token.setType(Token.TK_RELATIONAL_OPERATOR_IGUAL);
             token.setDescription("Operador Relacional Igual");
+            token.setText(value);
+        }
+        else if(value.equals(DIFERENTE)){
+            token.setType(Token.DIFERENTE);
+            token.setDescription("Operador Relacional Diferença");
             token.setText(value);
         }
     }

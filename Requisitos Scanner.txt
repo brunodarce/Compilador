@@ -5,7 +5,7 @@ Implemente em Java um analisador léxico para os seguintes símbolos:
 • digito ::= [0-9]
 • inteiro ::= digito+
 • float ::= dígito+.dígito+
-• char ::= 'letra' | 'dígito'
+• char ::= 'letra' | 'dígito'  'A'   '2'
 • identificador ::= (letra | "_")(letra | "_" | dígito)*
 • operador_relacional ::= <  |  >  |  <=  |  >=  |  ==  |  !=
 • operador_aritmético ::= "+"  |  "-"  |  "*"  |  "/"  |  "="

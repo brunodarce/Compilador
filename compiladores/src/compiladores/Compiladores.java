@@ -11,7 +11,7 @@ public class Compiladores {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       Scanner sc = new Scanner("entrada2.txt");
+       Scanner sc = new Scanner("entrada3.txt");
        Parser pa = new Parser(sc);
        Token token = null;
        

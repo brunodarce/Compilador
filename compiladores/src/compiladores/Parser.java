@@ -34,19 +34,19 @@ public class Parser {
                         bloco();
                     } else {
                         System.out.println("Error at line: " + token.getLine() + ", column: " + token.getColumn() + ", Description: SPECIAL_CHARACTER_FECHAPARENTESES expected.");
-                        System.exit(0);
+                        System.exit(1);
                     }
                 } else {
                     System.out.println("Error at line: " + token.getLine() + ", column: " + token.getColumn() + ", Description: SPECIAL_CHARACTER_ABREPARENTESES expected.");
-                    System.exit(0);
+                    System.exit(1);
                 }
             } else {
                 System.out.println("Error at line: " + token.getLine() + ", column: " + token.getColumn() + ", Description: Reserved Word MAIN expected.");
-                System.exit(0);
+                System.exit(1);
             }
         } else {
             System.out.println("Error at line: " + token.getLine() + ", column: " + token.getColumn() + ", Description: Reserved Word INT expected.");
-            System.exit(0);
+            System.exit(1);
             throw new SyntaxException("Tipo INT esperado na declaração do método.");
         }
     }
@@ -54,18 +54,19 @@ public class Parser {
     //<bloco>          ::=   “{“ {<decl_var>}* {<comando>}* “}”
     private void bloco() {
         if (token.getType() == 21) {// {
-            nextToken();
-
+            decl_var();
+            comando();
             if (token.getType() == 22) {// }
                 nextToken();
-                bloco();
+                System.out.println("Good Job!");
+                System.exit(0);
             } else {
                 System.out.println("Error at line: " + token.getLine() + ", column: " + token.getColumn() + ", Description: SPECIAL_CHARACTER_FECHACHAVE expected.");
-                System.exit(0);
+                System.exit(1);
             }
         } else {
             System.out.println("Error at line: " + token.getLine() + ", column: " + token.getColumn() + ", Description: SPECIAL_CHARACTER_ABRECHAVE expected.");
-            System.exit(0);
+            System.exit(1);
         }
     }
 
@@ -80,10 +81,11 @@ public class Parser {
     }
 
     public void decl_var() {
+        nextToken();
         if (token.getType() == 32 || token.getType() == 33 || token.getType() == 34) {//TK_RESERVED_WORD INT FLOAT CHAR
             nextToken();
             //int x; ou int x,y,z;
-            if (token.getType() == 1) {//TK_IDENTIFIER
+            if (token.getType() == 2) {//TK_IDENTIFIER
                 nextToken();
                 switch (token.getType()) {
                     case 23:

@@ -105,9 +105,7 @@ public class Scanner {
                     }else if(isSpecialCharacter(currentChar)){
                         value += currentChar;
                         token = new Token();
-                        token.setType(Token.TK_ARITHMETIC_OPERATOR);
-                        token.setDescription("Caracter Especial");
-                        token.setText(value);   
+                        setAsSpecialCharacter(value, token);
                         token.setLine(line);
                         token.setColumn(column);
                         return token; 
@@ -155,9 +153,7 @@ public class Scanner {
                     back();
                     if(Arrays.asList(RESERVED_WORD).contains(value)){
                         token = new Token();
-                        token.setType(Token.TK_RESERVED_WORD);
-                        token.setDescription("Palavra Reservada");
-                        token.setText(value);
+                        setAsReservedWord(value, token);
                         token.setLine(line);
                         token.setColumn(column);
                         return token;
@@ -445,6 +441,8 @@ public class Scanner {
             token.setType(Token.SPECIAL_CHARACTER_ABRECHAVE);
             token.setDescription("Caractere Especial Abre Chave");
             token.setText(value);
+            token.setLine(line);
+            token.setColumn(column);
         }
         else if(value.equals(FECHACHAVE)){
             token.setType(Token.SPECIAL_CHARACTER_FECHACHAVE);
